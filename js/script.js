@@ -1,4 +1,4 @@
-var civilization = [
+var inputCivilization = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -30,15 +30,23 @@ var civilization = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-var i,
-    j,
+//Cloning inputCivilization so we can reset
+var civilization = inputCivilization.slice();
+
+var x,
+    y,
+    intervalId,
     rectSize = 20,
     interval = 100;
 
 var canvas = document.getElementById("canvas"),
+    startPauseBtn = document.getElementById("startPauseBtn"),
+    intervalInput = document.getElementById("interval"),
     ctx = canvas.getContext("2d");
 ctx.canvas.height = rectSize * civilization.length;
 ctx.canvas.width = rectSize * civilization[0].length;
+
+intervalInput.value = interval;
 
 function numberOfNeighbours(x, y) {
   var nrOfNeighbours = 0;
@@ -144,6 +152,37 @@ function drawCivilization() {
   }
 }
 
+//Reset button click handler
+document.getElementById("resetBtn").addEventListener("click", function() {
+  civilization = inputCivilization.slice();
+  drawCivilization();
+}, false);
+
+//Start pause button click handler
+startPauseBtn.addEventListener("click", function() {
+  var buttonText = startPauseBtn.innerHTML;
+  if (buttonText === "Start") {
+    startLoop();
+    startPauseBtn.innerHTML = "Stop";
+  } else if (buttonText === "Stop") {
+    stopLoop();
+    startPauseBtn.innerHTML = "Start";
+  }
+}, false);
+
+//Interval input lost focus event handler
+intervalInput.addEventListener("focusout", function() {
+  interval = intervalInput.value;
+  stopLoop();
+  startLoop();
+}, false);
+
+function stopLoop() {
+  window.clearInterval(intervalId);
+}
+
+function startLoop() {
+  intervalId = window.setInterval(playForGod, interval);
+}
+
 drawCivilization();
-playForGod();
-window.setInterval(playForGod, interval);

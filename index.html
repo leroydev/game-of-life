@@ -5,17 +5,28 @@
   <title>Game of Life</title>
   <style>
     * {
-      margin:0;
-      padding:0;
+      margin: 0;
+      padding: 0;
     }
 
     canvas {
-      border:1px solid black;
+      border: 1px solid black;
+      margin: 5px;
     }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <br>
+
+  <button id="startPauseBtn">Start</button>
+  <button id="resetBtn">Reset</button>
+  <br>
+
+  <label>
+    Interval in ms:
+    <input type="text" id="interval" size="5">
+  </label>
   <script src="./js/script.js"></script>
 </body>
 </html>
