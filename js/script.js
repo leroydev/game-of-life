@@ -31,7 +31,7 @@ var inputCivilization = [
 ];
 
 //Cloning inputCivilization so we can reset
-var civilization = inputCivilization.slice();
+var civilization = clone2DArray(inputCivilization);
 
 var x,
     y,
@@ -42,6 +42,8 @@ var x,
 var canvas = document.getElementById("canvas"),
     startPauseBtn = document.getElementById("startPauseBtn"),
     intervalInput = document.getElementById("interval"),
+    useBtn = document.getElementById("useBtn"),
+    resetBtn = document.getElementById("resetBtn"),
     ctx = canvas.getContext("2d");
 ctx.canvas.height = rectSize * civilization.length;
 ctx.canvas.width = rectSize * civilization[0].length;
@@ -113,7 +115,7 @@ function numberOfNeighbours(x, y) {
 function playForGod() {
   var futureCivilization = [];
   for (y = 0; y < civilization.length; y++) {
-    futureCivilization[y] = civilization[y].slice(0);
+    futureCivilization[y] = civilization[y].slice();
     for (x = 0; x < civilization[y].length; x++) {
       var nrOfNeighbours = numberOfNeighbours(x, y);
 
@@ -135,7 +137,7 @@ function playForGod() {
   }
 
   for (y = 0; y < futureCivilization.length; y++) {
-    civilization[y] = futureCivilization[y].slice(0);
+    civilization[y] = futureCivilization[y].slice();
   }
   drawCivilization();
 }
@@ -152,9 +154,17 @@ function drawCivilization() {
   }
 }
 
+function clone2DArray(inputArray) {
+  var clonedArray = [];
+  for (var i = 0; i < inputArray.length; i++) {
+    clonedArray[i] = inputArray[i].slice();
+  }
+  return clonedArray;
+}
+
 //Reset button click handler
-document.getElementById("resetBtn").addEventListener("click", function() {
-  civilization = inputCivilization.slice();
+resetBtn.addEventListener("click", function() {
+  civilization = clone2DArray(inputCivilization);
   drawCivilization();
 }, false);
 
@@ -175,6 +185,33 @@ intervalInput.addEventListener("focusout", function() {
   interval = intervalInput.value;
   stopLoop();
   startLoop();
+}, false);
+
+//Canvas click handler
+canvas.addEventListener("mousedown", function(event) {
+  var x = event.x - canvas.offsetLeft;
+  var y = event.y - canvas.offsetTop;
+
+  //Translating x and y to grid coordinates
+  x = Math.floor(x / rectSize);
+  y = Math.floor(y / rectSize);
+
+  //Inverting value of clicked grid cell if inside bounds
+  if (y < civilization.length) {
+    if (x < civilization[0].length) {
+      if (civilization[y][x] === 0) {
+        civilization[y][x] = 1;
+      } else if (civilization[y][x] === 1) {
+        civilization[y][x] = 0;
+      }
+      drawCivilization();
+    }
+  }
+}, false);
+
+//Use current drawn civilization click handler
+useBtn.addEventListener("click", function() {
+  inputCivilization = clone2DArray(civilization);
 }, false);
 
 function stopLoop() {
