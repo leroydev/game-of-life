@@ -38,18 +38,26 @@ var x,
     intervalId,
     rectSize = 20,
     interval = 100;
+    aliveCellColor = 'black';
+    onceAliveCellColor = 'grey';
 
-var canvas = document.getElementById("canvas"),
+var canvas        = document.getElementById("canvas"),
     startPauseBtn = document.getElementById("startPauseBtn"),
     intervalInput = document.getElementById("interval"),
-    useBtn = document.getElementById("useBtn"),
-    resetBtn = document.getElementById("resetBtn"),
-    ctx = canvas.getContext("2d");
+    useBtn        = document.getElementById("useBtn"),
+    resetBtn      = document.getElementById("resetBtn"),
+    ctx           = canvas.getContext("2d");
 ctx.canvas.height = rectSize * civilization.length;
-ctx.canvas.width = rectSize * civilization[0].length;
+ctx.canvas.width  = rectSize * civilization[0].length;
 
 intervalInput.value = interval;
 
+/**
+ * Gives the number of alive neighbours for a certain coordinate
+ * @param  {Number} x coordinate on X axis to get amount of neighbours for
+ * @param  {Number} y coordinate on Y axis to get amount of neighbours for
+ * @return {Number}   Amount of neighbours for given x and y coordinate
+ */
 function numberOfNeighbours(x, y) {
   var nrOfNeighbours = 0;
 
@@ -112,10 +120,11 @@ function numberOfNeighbours(x, y) {
   return nrOfNeighbours;
 }
 
-function playForGod() {
-  var futureCivilization = [];
+function simulateStep() {
+  /* Simulate in a clone of the actual civilization to prevent this simulation
+     step from influencing itself with intermediate outcomes */
+  var futureCivilization = clone2DArray(civilization);
   for (y = 0; y < civilization.length; y++) {
-    futureCivilization[y] = civilization[y].slice();
     for (x = 0; x < civilization[y].length; x++) {
       var nrOfNeighbours = numberOfNeighbours(x, y);
 
@@ -136,23 +145,27 @@ function playForGod() {
     }
   }
 
-  for (y = 0; y < futureCivilization.length; y++) {
-    civilization[y] = futureCivilization[y].slice();
-  }
+  //Put just simulated civilization as the actual civilization
+  civilization = futureCivilization;
   drawCivilization();
 }
 
+/**
+ * Draws the currently stored civilization
+ */
 function drawCivilization() {
   for (y = 0; y < civilization.length; y++) {
     for (x = 0; x < civilization[y].length; x++) {
-      //Color alive cells black
-      if (civilization[y][x] === 1) {
+      var currentCell = civilization[y][x];
+
+      //Color alive cells
+      if (currentCell === 1) {
+        ctx.fillStyle = aliveCellColor;
         ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
-      //Color dead cells that were once alive grey
-      } else if (civilization[y][x] === 2) {
-        ctx.fillStyle = 'grey';
+      //Color dead cells that were once alive
+      } else if (currentCell === 2) {
+        ctx.fillStyle = onceAliveCellColor;
         ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
-        ctx.fillStyle = 'black';
       //Color dead cells white
       } else {
         ctx.clearRect(x * rectSize, y * rectSize, rectSize, rectSize);
@@ -161,6 +174,11 @@ function drawCivilization() {
   }
 }
 
+/**
+ * Clones an array containing arrays
+ * @param  {Array} inputArray   two dimensional array to clone
+ * @return {Array}              cloned version of 'inputArray'
+ */
 function clone2DArray(inputArray) {
   var clonedArray = [];
   for (var i = 0; i < inputArray.length; i++) {
@@ -203,12 +221,19 @@ canvas.addEventListener("mousedown", function(event) {
   x = Math.floor(x / rectSize);
   y = Math.floor(y / rectSize);
 
-  //Inverting value of clicked grid cell if inside bounds
+  //Check if click is inside of civilization
   if (y < civilization.length) {
     if (x < civilization[0].length) {
-      if (civilization[y][x] === 0) {
+      var clickedCell = civilization[y][x];
+
+      //If clicked cell is dead, make it alive
+      if (clickedCell === 0) {
         civilization[y][x] = 1;
-      } else if (civilization[y][x] === 1) {
+      //If clicked cell was once alive, make it alive
+      } else if (clickedCell === 2) {
+        civilization[y][x] = 1;
+      //If clicked cell is alive, make it dead
+      } else if (clickedCell === 1) {
         civilization[y][x] = 0;
       }
       drawCivilization();
@@ -226,7 +251,8 @@ function stopLoop() {
 }
 
 function startLoop() {
-  intervalId = window.setInterval(playForGod, interval);
+  intervalId = window.setInterval(simulateStep, interval);
 }
 
+//Draw the initial civilization
 drawCivilization();
