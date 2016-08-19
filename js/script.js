@@ -119,7 +119,7 @@ function playForGod() {
     for (x = 0; x < civilization[y].length; x++) {
       var nrOfNeighbours = numberOfNeighbours(x, y);
 
-      if (civilization[y][x] === 0) {
+      if (civilization[y][x] === 0 || civilization[y][x] === 2) {
         //Any dead cell with exactly three live neighbours becomes a live cell
         if (nrOfNeighbours === 3) {
           futureCivilization[y][x] = 1;
@@ -127,10 +127,10 @@ function playForGod() {
       } else if (civilization[y][x] === 1) {
         //Any live cell with more than three live neighbours dies
         if (nrOfNeighbours > 3) {
-          futureCivilization[y][x] = 0;
+          futureCivilization[y][x] = 2;
         //Any live cell with fewer than two live neighbours dies
         } else if (nrOfNeighbours < 2) {
-          futureCivilization[y][x] = 0;
+          futureCivilization[y][x] = 2;
         }
       }
     }
@@ -147,6 +147,10 @@ function drawCivilization() {
     for (x = 0; x < civilization[y].length; x++) {
       if (civilization[y][x] === 1) {
         ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
+      } else if (civilization[y][x] === 2) {
+        ctx.fillStyle = 'grey';
+        ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
+        ctx.fillStyle = 'black';
       } else {
         ctx.clearRect(x * rectSize, y * rectSize, rectSize, rectSize);
       }
