@@ -145,12 +145,15 @@ function playForGod() {
 function drawCivilization() {
   for (y = 0; y < civilization.length; y++) {
     for (x = 0; x < civilization[y].length; x++) {
+      //Color alive cells black
       if (civilization[y][x] === 1) {
         ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
+      //Color dead cells that were once alive grey
       } else if (civilization[y][x] === 2) {
         ctx.fillStyle = 'grey';
         ctx.fillRect(x * rectSize, y * rectSize, rectSize, rectSize);
         ctx.fillStyle = 'black';
+      //Color dead cells white
       } else {
         ctx.clearRect(x * rectSize, y * rectSize, rectSize, rectSize);
       }
