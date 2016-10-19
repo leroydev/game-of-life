@@ -207,9 +207,11 @@ startPauseBtn.addEventListener("click", function() {
 
 //Interval input lost focus event handler
 intervalInput.addEventListener("focusout", function() {
+  var newInterval = parseInt(intervalInput.value);
+  if (newInterval === NaN || newInterval <= 0)
+    return alert("Interval must be a positive number!");
+
   interval = intervalInput.value;
-  stopLoop();
-  startLoop();
 }, false);
 
 //Canvas click handler

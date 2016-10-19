@@ -1,5 +1,6 @@
 # Game of Life
 A quite understandable HTML5 canvas implementation of Conway's Game of Life.
+You can try this out on [http://leroydev.github.io/game-of-life](http://leroydev.github.io/game-of-life)
 
 ## Features
 - [x] Being able to edit the civilization by clicking cells

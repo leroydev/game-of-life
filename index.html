@@ -1,33 +1,27 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en-US">
 <head>
   <meta charset="UTF-8">
   <title>Game of Life</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-
-    canvas {
-      border: 1px solid black;
-      margin: 5px;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="shortcut icon" type="image/png" href="./favicon.png">
 </head>
 <body>
+  <h1>Game of Life implementation by <a href="http://github.com/leroydev">leroydev</a></h1>
   <canvas id="canvas"></canvas>
-  <br>
 
-  <button id="startPauseBtn">Start</button>
-  <button id="resetBtn">Reset</button>
-  <button id="useBtn">Use current drawn civilization</button>
-  <br>
+  <div class="controls">
+    <button id="startPauseBtn">Start</button>
+    <button id="resetBtn">Reset</button>
+    <button id="useBtn">Use current drawn civilization</button>
 
-  <label>
-    Interval in ms:
-    <input type="text" id="interval" size="5">
-  </label>
+    <br><br>
+
+    <label>
+      Interval in ms:
+      <input type="text" id="interval" size="5">
+    </label>
+  </div>
   <script src="./js/script.js"></script>
 </body>
 </html>
